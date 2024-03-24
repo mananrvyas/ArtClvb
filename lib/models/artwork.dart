@@ -1,5 +1,7 @@
 // Dummy Data till we use Firebase
 // moved in lib because flutter wasn't able to detect the path
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class ArtWork {
   final String id;
   final String title;
@@ -25,4 +27,16 @@ class ArtWork {
   // get isFavourite {
   //   return isFavourite;
   // }
+
+factory ArtWork.fromDocument(DocumentSnapshot doc) {
+    return ArtWork(
+      id: doc.id,
+      title: doc['title'],
+      artist: doc['artist'],
+      imageUrl: doc['imageUrl'],
+      description: doc['description'],
+      price: doc['price'].toDouble(),
+      isFavourite: doc['isFavourite'] ?? false,
+    );
+  }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/artwork.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen ({super.key});
@@ -16,91 +17,20 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    artworks = [
-      ArtWork(
-        id: '1',
-        title: 'The Starry Night',
-        artist: 'Vincent van Gogh',
-        imageUrl: "assets/images/1.jpeg",
-        description: 'The Starry Night is an oil on canvas painting by Dutch '
-            'Post-Impressionist painter Vincent van Gogh. Painted in June 1889, '
-            'it depicts the view from the east-facing window of his asylum room '
-            'at Saint-Rémy-de-Provence, just before sunrise, with the addition '
-            'of an ideal village.',
-        price: 1000,
-      ),
-      ArtWork(
-        id: '2',
-        title: 'The Scream',
-        artist: 'Edvard Munch',
-        imageUrl: "assets/images/2.jpeg",
-        description: 'The Scream is the popular name given to a composition '
-            'created by Norwegian Expressionist artist Edvard Munch in 1893. '
-            'The original German title given by Munch to his work was Der '
-            'Schrei der Natur, and the Norwegian title is Skrik.',
-        price: 2000,
-      ),
-      ArtWork(
-        id: '3',
-        title: 'The Persistence of Memory',
-        artist: 'Salvador Dalí',
-        imageUrl: "assets/images/3.jpeg",
-        description: 'The Persistence of Memory is a 1931 painting by artist '
-            'Salvador Dalí and one of the most recognizable works of Surrealism. '
-            'First shown at the Julien Levy Gallery in 1932, since 1934 the '
-            'painting has been in the collection of the Museum of Modern Art '
-            'in New York City, which received it from an anonymous donor.',
-        price: 3000,
-      ),
-      ArtWork(
-        id: '4',
-        title: 'The Last Supper',
-        artist: 'Leonardo da Vinci',
-        imageUrl: "assets/images/4.jpeg",
-        description: 'The Last Supper is a late 15th-century mural painting by '
-            'Italian artist Leonardo da Vinci housed by the refectory of the '
-            'Convent of Santa Maria delle Grazie in Milan, Italy. It is one of '
-            'the Western world\'s most recognizable paintings.',
-        price: 4000,
-      ),
-      ArtWork(
-        id: '5',
-        title: 'The Birth of Venus',
-        artist: 'Sandro Botticelli',
-        imageUrl: "assets/images/5.jpeg",
-        description: 'The Birth of Venus is a painting by the Italian artist'
-            ' Sandro Botticelli, probably made in the mid 1480s. It depicts '
-            'the goddess Venus arriving at the shore after her birth, when she '
-            'had emerged from the sea fully-grown.',
-        price: 5000,
-      ),
-      ArtWork(
-        id: '6',
-        title: 'The Creation of Adam',
-        artist: 'Michelangelo',
-        imageUrl: "assets/images/6.jpeg",
-        description: 'The Creation of Adam is a fresco painting by Italian artist'
-            ' Michelangelo, which forms part of the Sistine Chapel\'s ceiling, '
-            'painted c. 1508–1512. It illustrates the Biblical creation narrative'
-            ' from the Book of Genesis in which God gives life to Adam',
-        price: 6000,
-      ),
-      ArtWork(
-        id: '7',
-        title: 'The Night Watch',
-        artist: 'Rembrandt',
-        imageUrl: "assets/images/7.jpeg",
-        description:
-        'The Night Watch is a 1642 painting by Rembrandt van Rijn. It is in the'
-            ' collection of the Amsterdam Museum but is prominently displayed '
-            'in the Rijksmuseum as the best-known painting in its collection.'
-            ' The Night Watch is one of the most famous Dutch Golden Age '
-            'paintings.',
-        price: 7000,
-      ),
-    ];
 
-    displayedArtworks = artworks;
+    fetchArtworks();
+
+    print(artworks);
+    // displayedArtworks = artworks;
+  }
+
+  void fetchArtworks() async {
+    final snapshot = await FirebaseFirestore.instance.collection('artworks').get();
+    final List<ArtWork> all_arts = snapshot.docs.map((doc) => ArtWork.fromDocument(doc)).toList();
+    setState(() {
+      this.artworks = all_arts;
+      displayedArtworks = all_arts;
+    });
   }
 
   void _searchArtwork(String query) {
