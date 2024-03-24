@@ -112,6 +112,94 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  void _onAddArtwork() async {
+    String title = 'Sample Title';
+    String artist = 'Artist Name';
+    String imageUrl = "assets/images/placeholder.png";
+    String description = 'Description here';
+    double? price = 0.0;
+
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Add New Artwork'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                TextField(
+                  autofocus: true,
+                  decoration: InputDecoration(hintText: 'Artwork Name'),
+                  onChanged: (value) {
+                    title = value;
+                  },
+                ),
+                TextField(
+                  decoration: InputDecoration(hintText: 'Artist Name'),
+                  onChanged: (value) {
+                    artist = value;
+                  },
+                ),
+                TextField(
+                  decoration: InputDecoration(hintText: 'Image URL'),
+                  onChanged: (value) {
+                    if (value.isEmpty) {
+                      print("lmao it empty");
+                      imageUrl = 'assets/images/placeholder.png';
+                    } else {
+                      imageUrl = value;
+                    }
+                  },
+                ),
+                TextField(
+                  decoration: InputDecoration(hintText: 'Description'),
+                  onChanged: (value) {
+                    description = value;
+                  },
+                ),
+                TextField(
+                  decoration: InputDecoration(hintText: 'Price'),
+                  keyboardType: TextInputType.number,
+                  onChanged: (value) {
+                    price = double.tryParse(value);
+                  },
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Save'),
+              onPressed: () {
+                setState(() {
+                  artworks.add(
+                    ArtWork(
+                      id: DateTime.now().toString(), //meh
+                      title: title,
+                      artist: artist,
+                      imageUrl: imageUrl,
+                      description: description,
+                      price: price ?? 0.0,
+                      isFavourite: false,
+                    ),
+                  );
+                });
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -160,11 +248,10 @@ class _MainScreenState extends State<MainScreen> {
                       alignment: Alignment.bottomLeft,
                       children: [
                         Positioned.fill(
-                          child: Image.asset(
-                            artwork.imageUrl,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                        child: artwork.imageUrl.startsWith('http')
+                            ? Image.network(artwork.imageUrl, fit: BoxFit.cover)
+                            : Image.asset(artwork.imageUrl, fit: BoxFit.cover),
+                      ),
                         Positioned(
                           bottom: 10,
                           right: 10,
@@ -252,6 +339,12 @@ class _MainScreenState extends State<MainScreen> {
           });
         },
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _onAddArtwork,
+        tooltip: 'Add Artwork',
+        child: Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }
