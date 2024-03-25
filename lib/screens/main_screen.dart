@@ -43,11 +43,11 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void _onAddArtwork() async {
-    String title = 'Sample Title';
-    String artist = 'Artist Name';
-    String imageUrl = "assets/images/placeholder.png";
-    String description = 'Description here';
-    double? price = 0.0;
+    final TextEditingController titleController = TextEditingController();
+    final TextEditingController artistController = TextEditingController();
+    final TextEditingController imageUrlController = TextEditingController(text: "assets/images/placeholder.png");
+    final TextEditingController descriptionController = TextEditingController();
+    final TextEditingController priceController = TextEditingController();
 
     await showDialog(
       context: context,
@@ -58,41 +58,46 @@ class _MainScreenState extends State<MainScreen> {
             child: ListBody(
               children: <Widget>[
                 TextField(
+                  controller: titleController,
                   autofocus: true,
                   decoration: InputDecoration(hintText: 'Artwork Name'),
                   onChanged: (value) {
-                    title = value;
+                    // title = value;
                   },
                 ),
                 TextField(
+                  controller: artistController,
                   decoration: InputDecoration(hintText: 'Artist Name'),
                   onChanged: (value) {
-                    artist = value;
+                    // artist = value;
                   },
                 ),
                 TextField(
+                  controller: imageUrlController,
                   decoration: InputDecoration(hintText: 'Image URL'),
                   onChanged: (value) {
-                    if (value.isEmpty) {
-                      print("lmao it empty");
-                      imageUrl = 'assets/images/placeholder.png';
-                    } else {
-                      imageUrl = value;
-                    }
+                    // if (value.isEmpty) {
+                    //   print("lmao it empty");
+                    //   // imageUrl = 'assets/images/placeholder.png';
+                    // } else {
+                    //   // imageUrl = value;
+                    // }
                   },
                 ),
                 TextField(
+                  controller: descriptionController,
                   decoration: InputDecoration(hintText: 'Description'),
                   onChanged: (value) {
-                    description = value;
+                    // description = value;
                   },
                 ),
                 TextField(
+                  controller: priceController,
                   decoration: InputDecoration(hintText: 'Price'),
                   keyboardType: TextInputType.number,
-                  onChanged: (value) {
-                    price = double.tryParse(value);
-                  },
+                  // onChanged: (value) {
+                  //   // price = double.tryParse(value);
+                  // },
                 ),
               ],
             ),
@@ -106,20 +111,17 @@ class _MainScreenState extends State<MainScreen> {
             ),
             TextButton(
               child: Text('Save'),
-              onPressed: () {
-                setState(() {
-                  artworks.add(
-                    ArtWork(
-                      id: DateTime.now().toString(), //meh
-                      title: title,
-                      artist: artist,
-                      imageUrl: imageUrl,
-                      description: description,
-                      price: price ?? 0.0,
-                      isFavourite: false,
-                    ),
-                  );
-                });
+              onPressed: () async {
+                final newArtwork = {
+                  'title': titleController.text,
+                  'artist': artistController.text,
+                  'imageUrl': imageUrlController.text ?? 'assets/images/placeholder.png',
+                  'description': descriptionController.text,
+                  'price': double.tryParse(priceController.text) ?? 0.0,
+                  'isFavourite': false,
+                };
+                await FirebaseFirestore.instance.collection('artworks').add(newArtwork);
+                fetchArtworks();
                 Navigator.of(context).pop();
               },
             ),
@@ -261,7 +263,7 @@ class _MainScreenState extends State<MainScreen> {
               displayedArtworks = artworks.where((artwork) => artwork.isFavourite).toList();
             }
             else if(index == 0) {
-              displayedArtworks = artworks;
+              fetchArtworks();
             }
             else {
               displayedArtworks = [];
