@@ -1,16 +1,32 @@
-# artclvb
+# ArtClvb
 
-A new Flutter project.
+ArtClvb is a Flutter-based mobile app developed as my first project while diving into Flutter. It allows users to explore, search, and favorite artworks. This project integrates Firebase for authentication and data storage functionalities.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- Browse a curated list of artworks.
+- Search for artworks by title or artist.
+- User authentication (signup/login) via Firebase.
+- Mark and view favorite artworks.
+- Add new artworks to the database.
 
-A few resources to get you started if this is your first Flutter project:
+## Preview
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Here are some screenshots/videos of the app in action:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<a href="https://youtu.be/4vIWdy71-V4" target="_blank">
+  <img src="https://i.ibb.co/CKCW27W/Screenshot-2024-03-25-at-1-24-40-AM.png" height="500" alt="YT thumbnail"/>
+</a>
+
+*Check out the youtube video of the demo!*
+
+
+## Setup & Run
+
+- Clone the repo and navigate to the project directory.
+- Install dependencies: `flutter pub get`
+- Run the app: `flutter run`
+
+## License
+
+This project is open-sourced under the MIT License.
